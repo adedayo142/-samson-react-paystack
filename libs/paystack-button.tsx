@@ -1,29 +1,36 @@
-import React, {ReactNode} from 'react';
+import React, { ReactNode } from 'react';
 import usePaystackPayment from './use-paystack';
-import {callback, PaystackProps} from './types';
+import { callback, PaystackProps } from './types';
 
-interface PaystackButtonProps extends PaystackProps {
+type PaystackButtonProps<T extends PaystackProps> = T & {
   text?: string;
   className?: string;
   children?: ReactNode;
   onSuccess?: callback;
   onClose?: callback;
-}
+};
 
-const PaystackButton = ({
+const PaystackButton: <T extends PaystackProps>({
   text,
   className,
   children,
   onSuccess,
   onClose,
   ...config
-}: PaystackButtonProps): JSX.Element => {
-  const initializePayment = usePaystackPayment(config);
+}: PaystackButtonProps<T>) => JSX.Element = ({
+  text,
+  className,
+  children,
+  onSuccess,
+  onClose,
+  ...config
+}) => {
+  const initializePayment = usePaystackPayment<T>(config);
 
   return (
     <button
       className={className}
-      onClick={(): void => initializePayment({config, onSuccess, onClose})}
+      onClick={(): void => initializePayment({ config, onSuccess, onClose })}
     >
       {text || children}
     </button>
